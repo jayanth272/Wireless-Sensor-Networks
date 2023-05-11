@@ -14,7 +14,7 @@ Results obtained as per simulations in Matlab
 <img src="Leach-nodes.png" width="50%"/>
 <br>
 
-<img src="PSO-energy.png" width="50"/>
+<img src="PSO-energy.png" width="50%"/>
 <img src="Leach-energy.png" width="50%"/>
 <br>
 
