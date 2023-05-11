@@ -8,5 +8,16 @@ Consists of 3 files:
   3. <h4>calcfitness.m</h4> - function calculates fitness depending on all the WSN parameters considered. Called by PSO-algo.m each iteration.
 Results obtained as per simulations in Matlab
 <br>
-<h3>PSO-algorithm </h3>
-<img src="Leach-nodes.png" />
+<br>
+
+<img src="PSO-nodes.png" width="128"/>
+<img src="Leach-nodes.png" width="128"/>
+<br>
+
+<img src="PSO-energy.png" width="128"/>
+<img src="Leach-energy.png" width="128"/>
+<br>
+
+<img src="PSO-avgE.png" width="128"/>
+<img src="Leach-avgE.png" width="128"/>
+<br>
