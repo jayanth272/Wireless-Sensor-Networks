@@ -52,6 +52,7 @@ operating_nodes=n;
 transmissions=0;
 temp_val=0;
 flag1stdead=0;
+totalenergy=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%% End of Parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%
            
 %%% Creation of the Wireless Sensor Network %%%
@@ -61,7 +62,11 @@ for i=1:n
     SN(i).id=i;	% sensor's ID number
     SN(i).x=rand(1,1)*xm;	% X-axis coordinates of sensor node
     SN(i).y=rand(1,1)*ym;	% Y-axis coordinates of sensor node
-    SN(i).E=Eo;     % nodes energy levels (initially set to be equal to "Eo"
+    %SN(i).E=Eo;     % nodes energy levels (initially set to be equal to "Eo"
+     
+    SN(i).E=2+(5-2)*rand(); %generate random numbers between 2 and 5;
+    %To generate random  numbers b/w a and b r = a + (b-a)*rand();
+
     SN(i).role=0;   % node acts as normal if the value is '0', if elected as a cluster head it  gets the value '1' (initially all nodes are normal)
     SN(i).cluster=0;	% the cluster which a node belongs to
     SN(i).cond=1;	% States the current condition of the node. when the node is operational its value is =1 and when dead =0
@@ -96,9 +101,12 @@ while operating_nodes>0
 
     No=floor(p*operating_nodes);
  
+    CHdead=0;
+
 % Cluster Heads Election %
-    if(rnd==1 | mod(rnd,100)==0 )
+    if(mod(rnd,10)==0 || CHdead==1)
         CH_array=PSO_algo(SN,No);
+        CHdead=0;
     end
 
         for i=1:n
@@ -129,7 +137,7 @@ while operating_nodes>0
     
     
     
-% Grouping the Nodes into Clusters & caclulating the distance between node and cluster head %
+% Grouping the Nodes into Clusters & calculating the distance between node and cluster head %
      
        for i=1:n
         if  (SN(i).role==0) && (SN(i).E>0) && (CLheads>0) % if node is normal
@@ -148,29 +156,6 @@ while operating_nodes>0
         SN(i).chid=CL(Col).id;
         end
        end
-       
-% Grouping the Nodes into Clusters & caclulating the distance between node and cluster head %
-     
-       for i=1:n
-        if  (SN(i).role==0) && (SN(i).E>0) && (CLheads>0) % if node is normal
-            for m=1:CLheads
-            d(m)=sqrt((CL(m).x-SN(i).x)^2 + (CL(m).y-SN(i).y)^2);
-            % we calculate the distance 'd' between the sensor node that is
-            % transmitting and the cluster head that is receiving with the following equation+ 
-            % d=sqrt((x2-x1)^2 + (y2-y1)^2) where x2 and y2 the coordinates of
-            % the cluster head and x1 and y1 the coordinates of the transmitting node
-            end
-        d=d(1:CLheads); % fixing the size of "d" array
-        [M,I]=min(d(:)); % finds the minimum distance of node to CH
-        [Row, Col] = ind2sub(size(d),I); % displays the Cluster Number in which this node belongs too
-        SN(i).cluster=Col; % assigns node to the cluster
-        SN(i).dtch= d(Col); % assigns the distance of node to CH
-        SN(i).chid=CL(Col).id;
-        end
-       end
-       
-        
-       
                            %%%%%% Steady-State Phase %%%%%%
                       
   
@@ -193,6 +178,7 @@ while operating_nodes>0
                 SN(SN(i).chid).rop=rnd;
                 dead_nodes=dead_nodes +1;
                 operating_nodes= operating_nodes - 1
+                CHdead=1;
              end
         end
         end
@@ -225,6 +211,7 @@ while operating_nodes>0
          operating_nodes= operating_nodes - 1
          SN(i).cond=0;
          SN(i).rop=rnd;
+         CHdead=1;
          end
      end
    end
@@ -234,10 +221,9 @@ while operating_nodes>0
         temp_val=1;
         flag1stdead=rnd
     end
+
     % Display Number of Cluster Heads of this round %
     %CLheads;
-   
-    
     transmissions=transmissions+1;
     if CLheads==0
     transmissions=transmissions-1;
@@ -250,11 +236,13 @@ while operating_nodes>0
     tr(transmissions)=operating_nodes;
     op(rnd)=operating_nodes;
     
-    if energy>0
-    nrg(transmissions)=energy;
-    end
+    totalenergy=totalenergy+energy;
+    nrg(transmissions)=totalenergy;
+    
+
 end
 sum=0;
+
 for i=1:flag1stdead
     sum=nrg(i) + sum;
 end
@@ -267,7 +255,7 @@ end
     % Plotting Simulation Results "Operating Nodes per Round" %
     figure(2)
     plot(1:rnd,op(1:rnd),'-r','Linewidth',2);
-    title ({'LEACH'; 'Operating Nodes per Round';})
+    title ({'PSO'; 'Operating Nodes per Round';})
     xlabel 'Rounds';
     ylabel 'Operational Nodes';
     hold on;
@@ -275,7 +263,7 @@ end
     % Plotting Simulation Results  %
     figure(3)
     plot(1:transmissions,tr(1:transmissions),'-r','Linewidth',2);
-    title ({'LEACH'; 'Operational Nodes per Transmission';})
+    title ({'PSO'; 'Operational Nodes per Transmission';})
     xlabel 'Transmissions';
     ylabel 'Operational Nodes';
     hold on;
@@ -283,7 +271,7 @@ end
     % Plotting Simulation Results  %
     figure(4)
     plot(1:flag1stdead,nrg(1:flag1stdead),'-r','Linewidth',2);
-    title ({'LEACH'; 'Energy consumed per Transmission';})
+    title ({'PSO'; 'Energy consumed per Transmission';})
     xlabel 'Transmission';
     ylabel 'Energy ( J )';
     hold on;
@@ -291,7 +279,7 @@ end
     % Plotting Simulation Results  %
     figure(5)
     plot(1:flag1stdead,avg_node(1:flag1stdead),'-r','Linewidth',2);
-    title ({'LEACH'; 'Average Energy consumed by a Node per Transmission';})
+    title ({'PSO'; 'Average Energy consumed by a Node per Transmission';})
     xlabel 'Transmissions';
     ylabel 'Energy ( J )';
     hold on;
