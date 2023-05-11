@@ -9,4 +9,4 @@ Consists of 3 files:
 Results obtained as per simulations in Matlab
 <br>
 <h3>PSO-algorithm </h3>
-![Nodes per transmission](../Leach-nodes.png)
+![Nodes per transmission](Leach-nodes.png)
