@@ -1,13 +1,14 @@
-function fit=calcfitness(SN, distances,c, particle, centroid)
+function fit=calcfitness(SN, distances, indexArray, c, particle, centroid)
 
-% [val, ind]=min(distances(:,:,particle));
-% CH_array=ind;
-% EnergySum=0;
-% 
-% for i=1:size(CH_array)
-%     EnergySum=EnergySum+SN(i).E;
-% end
-% 
-% fit=mean(distances(c(:,particle)==centroid,centroid,particle))/EnergySum;
+[val, ind]=min(distances(:,:,particle));
+CH_array=indexArray(ind);
+EnergySum=0;
+BSDist=0;
+for i=1:size(CH_array)
+    EnergySum=EnergySum+SN(CH_array(i)).E;
 
-fit=mean(distances(c(:,particle)==centroid,centroid,particle));
+end
+
+fit=mean(distances(c(:,particle)==centroid,centroid,particle))/EnergySum;
+
+% fit=mean(distances(c(:,particle)==centroid,centroid,particle));
