@@ -4,7 +4,7 @@ dataset_size = size (meas2);
 meas=[];
 for i = 1:dataset_size
     if SN(i).E>0
-        meas=[meas; meas2(i, :)];
+        meas=[meas; meas2(i, :), SN(i).id];
     end
 end
 dataset_size =size(meas);
@@ -21,7 +21,7 @@ manual_init = false;    % enable/disable manual initialization (only for dimensi
 % EXECUTE K-MEANS
 if hybrid_pso
     % fprintf('Running Matlab K-Means Version\n');
-    [idx,KMEANS_CENTROIDS] = kmeans(meas,centroids, 'dist','sqEuclidean', 'display','iter','start','uniform','onlinephase','off');
+    [idx,KMEANS_CENTROIDS] = kmeans(meas(:, [1,2]),centroids, 'dist','sqEuclidean', 'display','off','start','uniform','onlinephase','off');
     % fprintf('\n');
 end
 
@@ -54,8 +54,8 @@ swarm_vel = rand(centroids,dimensions,particles)*0.1;
 swarm_pos = rand(centroids,dimensions,particles);
 swarm_best = zeros(centroids,dimensions);
 c = zeros(dataset_size(1),particles);
-ranges = max(meas)-min(meas); %%scale
-swarm_pos = swarm_pos .* repmat(ranges,centroids,1,particles) + repmat(min(meas),centroids,1,particles);
+ranges = max(meas(:, [1,2]))-min(meas(:, [1,2])); %%scale
+swarm_pos = swarm_pos .* repmat(ranges,centroids,1,particles) + repmat(min(meas(:, [1,2])),centroids,1,particles);
 swarm_fitness(1:particles)=Inf;
 
 % KMEANS_INIT
@@ -83,7 +83,7 @@ for iteration=1:iterations
             distance=zeros(dataset_size(1),1);
             for data_vector=1:dataset_size(1)
                 %meas(data_vector,:)
-                distance(data_vector,1)=norm(swarm_pos(centroid,:,particle)-meas(data_vector,:));
+                distance(data_vector,1)=norm(swarm_pos(centroid,:,particle)-meas(data_vector,[1,2]));
             end
             distances(:,centroid,particle)=distance;
         end
@@ -107,7 +107,7 @@ for iteration=1:iterations
     %             if dimensions == 3
     %                 pc = [pc plot3(swarm_pos(centroid,1,particle),swarm_pos(centroid,2,particle),swarm_pos(centroid,3,particle),'*','color',cluster_colors_vector(particle,:))];
     %             elseif dimensions == 2
-    %                 pc = [pc plot(swarm_pos(centroid,1,particle),swarm_pos(centroid,2,particle),'o','color',cluster_colors_vector(particle,:))];
+    %                 pc = [pc plot(swarm_pos(centroid,1,particle),swarm_pos(centroid,2,particle),'^','color',cluster_colors_vector(particle,:))];
     %             end
     %         end
     %     end
@@ -120,7 +120,7 @@ for iteration=1:iterations
     for particle=1:particles
         for centroid = 1 : centroids
             if any(c(:,particle) == centroid)
-                local_fitness=calcfitness(SN, distances, c, particle, centroid);
+                local_fitness=calcfitness(SN, distances, floor(meas(:,3)), c, particle, centroid);
                 
                 average_fitness(particle,1) = average_fitness(particle,1) + local_fitness;
             end
@@ -165,7 +165,8 @@ end
 
 % PLOT THE ASSOCIATIONS WITH RESPECT TO THE CLUSTER 
 % hold on;
-particle=index; %select the best particle (with best fitness) 
+particle=index; 
+%select the best particle (with best fitness) 
 % cluster_colors = ['m','g','y','b','r','c','g'];
 % for centroid=1:centroids
 %     if any(c(:,particle) == centroid)
@@ -182,7 +183,7 @@ particle=index; %select the best particle (with best fitness)
 % hold off;
 
 [val, ind]=min(distances(:,:,particle));
-CH_array=ind;
+CH_array=floor(meas(ind,3));
 
 % % VIDEO GRUB STUFF...
 % if write_video
