@@ -10,14 +10,14 @@ Results obtained as per simulations in Matlab
 <br>
 <br>
 
-<img src="PSO-nodes.png" width="50%"/>
-<img src="Leach-nodes.png" width="50%"/>
+<img src="images/PSO-nodes.png" width="50%"/>
+<img src="images/Leach-nodes.png" width="50%"/>
 <br>
 
-<img src="PSO-energy.png" width="50%"/>
-<img src="Leach-energy.png" width="50%"/>
+<img src="images/PSO-energy.png" width="50%"/>
+<img src="images/Leach-energy.png" width="50%"/>
 <br>
 
-<img src="PSO-avgE.png" width="50%"/>
-<img src="Leach-avgE.png" width="50%"/>
+<img src="images/PSO-avgE.png" width="50%"/>
+<img src="images/Leach-avgE.png" width="50%"/>
 <br>
